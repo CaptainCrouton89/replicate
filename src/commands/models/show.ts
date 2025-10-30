@@ -67,6 +67,65 @@ export default class ModelsShow extends BaseCommand {
       } else {
         this.log('No input schema available for this model.\n');
       }
+
+      // Add helpful next steps
+      this.log('\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
+      this.log('Next Steps:\n');
+
+      if (schema?.components?.schemas?.Input?.properties) {
+        const inputSchema = schema.components.schemas.Input.properties;
+        const requiredFields = schema.components.schemas.Input.required || [];
+
+        // Generate example JSON
+        const exampleInput: any = {};
+        for (const [key, value] of Object.entries(inputSchema)) {
+          const field = value as any;
+          if (requiredFields.includes(key)) {
+            if (field.type === 'string') {
+              exampleInput[key] = field.example || field.default || `"your-${key}-here"`;
+            } else if (field.type === 'number' || field.type === 'integer') {
+              exampleInput[key] = field.default || field.minimum || 1;
+            } else if (field.type === 'boolean') {
+              exampleInput[key] = field.default !== undefined ? field.default : true;
+            } else if (field.type === 'array') {
+              exampleInput[key] = field.default || [];
+            }
+          }
+        }
+
+        this.log('1. Create a prediction using inline parameters:\n');
+        this.log('   replicate predictions:create ' + args.model + ' --wait \\');
+
+        // Show inline parameter examples for required fields
+        const inlineParams = requiredFields
+          .map((field: string) => {
+            const fieldDef = (inputSchema as any)[field];
+            if (fieldDef.type === 'string') {
+              const example = fieldDef.example || fieldDef.default || `your-${field}-here`;
+              return `--${field}="${example}"`;
+            } else if (fieldDef.type === 'number' || fieldDef.type === 'integer') {
+              const example = fieldDef.default || fieldDef.minimum || 1;
+              return `--${field}=${example}`;
+            } else if (fieldDef.type === 'boolean') {
+              return `--${field}=${fieldDef.default !== undefined ? fieldDef.default : 'true'}`;
+            }
+            return `--${field}=<value>`;
+          })
+          .join(' \\\n       ');
+
+        if (inlineParams) {
+          this.log('       ' + inlineParams);
+        }
+
+        this.log('\n2. Or create an input.json file:\n');
+        this.log('   ' + JSON.stringify(exampleInput, null, 2).split('\n').join('\n   '));
+        this.log('\n   Then run:');
+        this.log('   replicate predictions:create ' + args.model + ' --input-file=input.json --wait');
+      } else {
+        this.log('   replicate predictions:create ' + args.model + ' --wait');
+      }
+
+      this.log('\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n');
     } catch (error: any) {
       try {
         await this.handleAuthError(error);

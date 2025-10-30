@@ -1,0 +1,186 @@
+{
+  "commands": {
+    "models:list": {
+      "aliases": [],
+      "args": {},
+      "description": "List available models",
+      "flags": {
+        "search": {
+          "char": "s",
+          "description": "Search for models by name or description",
+          "name": "search",
+          "hasDynamicHelp": false,
+          "multiple": false,
+          "type": "option"
+        },
+        "json": {
+          "char": "j",
+          "description": "Output results as JSON",
+          "name": "json",
+          "allowNo": false,
+          "type": "boolean"
+        }
+      },
+      "hasDynamicHelp": false,
+      "hiddenAliases": [],
+      "id": "models:list",
+      "pluginAlias": "replicate-cli",
+      "pluginName": "replicate-cli",
+      "pluginType": "core",
+      "strict": true,
+      "isESM": true,
+      "relativePath": [
+        "lib",
+        "commands",
+        "models",
+        "list.js"
+      ]
+    },
+    "models:show": {
+      "aliases": [],
+      "args": {
+        "model": {
+          "description": "Model name in format owner/model-name",
+          "name": "model",
+          "required": true
+        }
+      },
+      "description": "Show model details and input schema",
+      "flags": {},
+      "hasDynamicHelp": false,
+      "hiddenAliases": [],
+      "id": "models:show",
+      "pluginAlias": "replicate-cli",
+      "pluginName": "replicate-cli",
+      "pluginType": "core",
+      "strict": true,
+      "isESM": true,
+      "relativePath": [
+        "lib",
+        "commands",
+        "models",
+        "show.js"
+      ]
+    },
+    "predictions:create": {
+      "aliases": [],
+      "args": {
+        "model": {
+          "description": "Model name in format owner/model-name",
+          "name": "model",
+          "required": true
+        }
+      },
+      "description": "Create a new prediction",
+      "flags": {
+        "input-file": {
+          "description": "Path to JSON file containing input parameters",
+          "name": "input-file",
+          "hasDynamicHelp": false,
+          "multiple": false,
+          "type": "option"
+        },
+        "json": {
+          "char": "j",
+          "description": "Output result as JSON",
+          "name": "json",
+          "allowNo": false,
+          "type": "boolean"
+        }
+      },
+      "hasDynamicHelp": false,
+      "hiddenAliases": [],
+      "id": "predictions:create",
+      "pluginAlias": "replicate-cli",
+      "pluginName": "replicate-cli",
+      "pluginType": "core",
+      "strict": false,
+      "isESM": true,
+      "relativePath": [
+        "lib",
+        "commands",
+        "predictions",
+        "create.js"
+      ]
+    },
+    "predictions:get": {
+      "aliases": [],
+      "args": {
+        "id": {
+          "description": "Prediction ID",
+          "name": "id",
+          "required": true
+        }
+      },
+      "description": "Get prediction status and results",
+      "flags": {
+        "json": {
+          "char": "j",
+          "description": "Output result as JSON",
+          "name": "json",
+          "allowNo": false,
+          "type": "boolean"
+        },
+        "watch": {
+          "char": "w",
+          "description": "Watch prediction until completion",
+          "name": "watch",
+          "allowNo": false,
+          "type": "boolean"
+        }
+      },
+      "hasDynamicHelp": false,
+      "hiddenAliases": [],
+      "id": "predictions:get",
+      "pluginAlias": "replicate-cli",
+      "pluginName": "replicate-cli",
+      "pluginType": "core",
+      "strict": true,
+      "isESM": true,
+      "relativePath": [
+        "lib",
+        "commands",
+        "predictions",
+        "get.js"
+      ]
+    },
+    "predictions:list": {
+      "aliases": [],
+      "args": {},
+      "description": "List your prediction history",
+      "flags": {
+        "json": {
+          "char": "j",
+          "description": "Output results as JSON",
+          "name": "json",
+          "allowNo": false,
+          "type": "boolean"
+        },
+        "limit": {
+          "char": "l",
+          "description": "Maximum number of predictions to return",
+          "name": "limit",
+          "default": 20,
+          "hasDynamicHelp": false,
+          "multiple": false,
+          "type": "option"
+        }
+      },
+      "hasDynamicHelp": false,
+      "hiddenAliases": [],
+      "id": "predictions:list",
+      "pluginAlias": "replicate-cli",
+      "pluginName": "replicate-cli",
+      "pluginType": "core",
+      "strict": true,
+      "isESM": true,
+      "relativePath": [
+        "lib",
+        "commands",
+        "predictions",
+        "list.js"
+      ]
+    }
+  },
+  "version": "1.0.0"
+}

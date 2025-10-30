@@ -31,9 +31,6 @@ jobs:
         with:
           version: 9
 
-      - name: Install dependencies
-        run: pnpm install --frozen-lockfile
-
       - name: Determine version bump type
         id: bump_type
         run: |

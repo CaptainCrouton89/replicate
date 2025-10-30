@@ -1,5 +1,6 @@
 import { Flags } from '@oclif/core';
 import { BaseCommand } from '../../utils/command-base.js';
+import { getApiToken } from '../../utils/replicate-client.js';
 
 export default class ModelsList extends BaseCommand {
   static description = 'List available models';
@@ -15,16 +16,16 @@ export default class ModelsList extends BaseCommand {
     }),
   };
 
-  async run() {
+  async run(): Promise<void> {
     const { flags } = await this.parse(ModelsList);
-    const replicate = this.getClient();
+    const replicate = await this.getClient();
 
     try {
       let allModels: any[] = [];
 
       if (flags.search) {
         // Use the dedicated search API endpoint (faster than pagination)
-        const apiToken = process.env.REPLICATE_API_TOKEN;
+        const apiToken = getApiToken();
         const searchQuery = encodeURIComponent(flags.search);
 
         const response = await fetch(
@@ -74,7 +75,14 @@ export default class ModelsList extends BaseCommand {
         this.log(`  ${description}\n`);
       }
     } catch (error: any) {
-      this.error(`Failed to list models: ${error.message}`);
+      try {
+        await this.handleAuthError(error);
+        // If auth error was handled, retry the operation
+        return this.run();
+      } catch {
+        // Not an auth error, show original error
+        this.error(`Failed to list models: ${error.message}`);
+      }
     }
   }
 }

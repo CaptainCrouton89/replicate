@@ -16,9 +16,9 @@ export default class PredictionsList extends BaseCommand {
     }),
   };
 
-  async run() {
+  async run(): Promise<void> {
     const { flags } = await this.parse(PredictionsList);
-    const replicate = this.getClient();
+    const replicate = await this.getClient();
 
     try {
       const predictions = await replicate.predictions.list();
@@ -52,7 +52,14 @@ export default class PredictionsList extends BaseCommand {
         this.log('');
       }
     } catch (error: any) {
-      this.error(`Failed to list predictions: ${error.message}`);
+      try {
+        await this.handleAuthError(error);
+        // If auth error was handled, retry the operation
+        return this.run();
+      } catch {
+        // Not an auth error, show original error
+        this.error(`Failed to list predictions: ${error.message}`);
+      }
     }
   }
 }

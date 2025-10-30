@@ -11,9 +11,9 @@ export default class ModelsShow extends BaseCommand {
     }),
   };
 
-  async run() {
+  async run(): Promise<void> {
     const { args } = await this.parse(ModelsShow);
-    const replicate = this.getClient();
+    const replicate = await this.getClient();
 
     try {
       // Split model identifier into owner and name
@@ -68,7 +68,14 @@ export default class ModelsShow extends BaseCommand {
         this.log('No input schema available for this model.\n');
       }
     } catch (error: any) {
-      this.error(`Failed to get model details: ${error.message}`);
+      try {
+        await this.handleAuthError(error);
+        // If auth error was handled, retry the operation
+        return this.run();
+      } catch {
+        // Not an auth error, show original error
+        this.error(`Failed to get model details: ${error.message}`);
+      }
     }
   }
 }

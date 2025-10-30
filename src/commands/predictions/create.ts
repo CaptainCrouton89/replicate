@@ -48,10 +48,10 @@ export default class PredictionsCreate extends BaseCommand {
 
   static strict = false; // Allow unknown flags for dynamic model arguments
 
-  async run() {
+  async run(): Promise<void> {
     // Parse with strict=false to allow unknown flags
-    const { args, flags, argv, raw } = await this.parse(PredictionsCreate);
-    const replicate = this.getClient();
+    const { args, flags, argv } = await this.parse(PredictionsCreate);
+    const replicate = await this.getClient();
 
     try {
       // Split model identifier into owner and name
@@ -126,7 +126,14 @@ export default class PredictionsCreate extends BaseCommand {
         }
       }
     } catch (error: any) {
-      this.error(`Failed to create prediction: ${error.message}`);
+      try {
+        await this.handleAuthError(error);
+        // If auth error was handled, retry the operation
+        return this.run();
+      } catch {
+        // Not an auth error, show original error
+        this.error(`Failed to create prediction: ${error.message}`);
+      }
     }
   }
 }

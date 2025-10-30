@@ -26,11 +26,15 @@
     "api",
     "predictions"
   ],
-  "author": "",
+  "author": "Silas Rhyneer",
   "license": "MIT",
   "repository": {
     "type": "git",
     "url": "https://github.com/r-cli/replicate.git"
+  },
+  "homepage": "https://github.com/r-cli/replicate#readme",
+  "bugs": {
+    "url": "https://github.com/r-cli/replicate/issues"
   },
   "publishConfig": {
     "access": "public"

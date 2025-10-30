@@ -1,0 +1,48 @@
+{
+  "name": "replicate-cli",
+  "version": "1.0.0",
+  "description": "CLI tool for interacting with Replicate API",
+  "type": "module",
+  "bin": {
+    "replicate": "./bin/replicate"
+  },
+  "main": "lib/index.js",
+  "types": "lib/index.d.ts",
+  "files": [
+    "bin",
+    "lib"
+  ],
+  "scripts": {
+    "build": "tsc && tsc-alias",
+    "prepublishOnly": "npm run build",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "replicate",
+    "cli",
+    "ai",
+    "ml"
+  ],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "@oclif/core": "^4.0.0",
+    "dotenv": "^16.4.5",
+    "replicate": "^0.34.1"
+  },
+  "devDependencies": {
+    "@types/node": "^20.11.0",
+    "oclif": "^4.22.38",
+    "tsc-alias": "^1.8.16",
+    "typescript": "^5.3.3"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "oclif": {
+    "bin": "replicate",
+    "dirname": "replicate",
+    "commands": "./lib/commands",
+    "topicSeparator": ":"
+  }
+}

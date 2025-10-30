@@ -1,10 +1,14 @@
-# Replicate CLI
+# @r-cli/replicate
 
-A command-line interface for interacting with the Replicate API. This CLI tool allows you to list models, create predictions, and manage your prediction history directly from the terminal.
+A powerful CLI tool for interacting with the Replicate API. List models, create predictions, and manage your AI workflows directly from the terminal.
 
 ## Installation
 
-### Local Development Installation
+```bash
+npm install -g @r-cli/replicate
+```
+
+### Local Development
 
 1. **Install dependencies:**
    ```bash
@@ -23,23 +27,78 @@ A command-line interface for interacting with the Replicate API. This CLI tool a
 
    This makes the `replicate` command available globally on your system.
 
-### Production Installation
+## Authentication
 
-To install from a published npm package (if published):
+The CLI will automatically prompt you for your API token on first use. Get your token from [replicate.com/account/api-tokens](https://replicate.com/account/api-tokens).
+
+### Interactive Authentication (Recommended)
+
+Simply run any command, and you'll be prompted to enter your API token:
+
 ```bash
-npm install -g replicate-cli
+replicate models:list
+# 🔑 No API token found.
+# Get your API token from: https://replicate.com/account/api-tokens
+#
+# Enter your API token: ********
+# ✓ Token saved successfully!
 ```
 
-## Configuration
+Your token is securely stored at `~/.config/replicate/config` and automatically used for all future commands.
 
-The CLI loads your Replicate API token from a `.env.local` file in the project root.
+### Manual Authentication
 
-Create or update `.env.local`:
+You can also authenticate explicitly using:
+
+```bash
+replicate auth:login
 ```
+
+### Alternative Authentication Methods
+
+The CLI checks for your API token in this order:
+
+1. **Config file** (recommended): `~/.config/replicate/config`
+2. **Environment variable**: `REPLICATE_API_TOKEN`
+3. **dotenv file**: `.env.local` or `.env` in current directory
+
+To use environment variables:
+```bash
+export REPLICATE_API_TOKEN=your_api_token_here
+replicate models:list
+```
+
+Or create a `.env.local` file:
+```bash
+# .env.local
 REPLICATE_API_TOKEN=your_api_token_here
 ```
 
-You can get your API token from [replicate.com/account](https://replicate.com/account).
+### Managing Authentication
+
+**View current authentication status:**
+```bash
+replicate auth:whoami
+```
+
+**Manually set or update your token:**
+```bash
+replicate auth:login
+# or
+replicate config:set token r8_your_token_here
+```
+
+**View your configuration:**
+```bash
+replicate config:get
+# or view specific value
+replicate config:get token
+```
+
+**Logout (remove stored token):**
+```bash
+replicate auth:logout
+```
 
 ## Usage
 
@@ -195,9 +254,10 @@ replicate models:list
 
 ## Troubleshooting
 
-**Error: REPLICATE_API_TOKEN not found**
-- Ensure `.env.local` exists in the project root
-- Verify the token is correctly formatted: `REPLICATE_API_TOKEN=your_token_here`
+**Authentication Issues**
+- Run `replicate auth:whoami` to verify your authentication status
+- If you see "Invalid or expired API token", run `replicate auth:login` to re-authenticate
+- Your token is stored at `~/.config/replicate/config`
 
 **Command not found after npm link**
 - Make sure your shell has the npm bin directory in PATH

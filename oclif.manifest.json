@@ -1,5 +1,160 @@
 {
   "commands": {
+    "auth:login": {
+      "aliases": [],
+      "args": {},
+      "description": "Authenticate with your Replicate API token",
+      "examples": [
+        "<%= config.bin %> <%= command.id %>"
+      ],
+      "flags": {},
+      "hasDynamicHelp": false,
+      "hiddenAliases": [],
+      "id": "auth:login",
+      "pluginAlias": "@r-cli/replicate",
+      "pluginName": "@r-cli/replicate",
+      "pluginType": "core",
+      "strict": true,
+      "enableJsonFlag": false,
+      "isESM": true,
+      "relativePath": [
+        "lib",
+        "commands",
+        "auth",
+        "login.js"
+      ]
+    },
+    "auth:logout": {
+      "aliases": [],
+      "args": {},
+      "description": "Remove stored API token",
+      "examples": [
+        "<%= config.bin %> <%= command.id %>"
+      ],
+      "flags": {},
+      "hasDynamicHelp": false,
+      "hiddenAliases": [],
+      "id": "auth:logout",
+      "pluginAlias": "@r-cli/replicate",
+      "pluginName": "@r-cli/replicate",
+      "pluginType": "core",
+      "strict": true,
+      "enableJsonFlag": false,
+      "isESM": true,
+      "relativePath": [
+        "lib",
+        "commands",
+        "auth",
+        "logout.js"
+      ]
+    },
+    "auth:whoami": {
+      "aliases": [],
+      "args": {},
+      "description": "Show currently authenticated account information",
+      "examples": [
+        "<%= config.bin %> <%= command.id %>"
+      ],
+      "flags": {
+        "json": {
+          "char": "j",
+          "description": "Output as JSON",
+          "name": "json",
+          "allowNo": false,
+          "type": "boolean"
+        }
+      },
+      "hasDynamicHelp": false,
+      "hiddenAliases": [],
+      "id": "auth:whoami",
+      "pluginAlias": "@r-cli/replicate",
+      "pluginName": "@r-cli/replicate",
+      "pluginType": "core",
+      "strict": true,
+      "enableJsonFlag": false,
+      "isESM": true,
+      "relativePath": [
+        "lib",
+        "commands",
+        "auth",
+        "whoami.js"
+      ]
+    },
+    "config:get": {
+      "aliases": [],
+      "args": {
+        "key": {
+          "description": "Configuration key to display (optional)",
+          "name": "key",
+          "required": false
+        }
+      },
+      "description": "Show configuration values",
+      "examples": [
+        "<%= config.bin %> <%= command.id %>",
+        "<%= config.bin %> <%= command.id %> token",
+        "<%= config.bin %> <%= command.id %> --json"
+      ],
+      "flags": {
+        "json": {
+          "char": "j",
+          "description": "Output as JSON",
+          "name": "json",
+          "allowNo": false,
+          "type": "boolean"
+        }
+      },
+      "hasDynamicHelp": false,
+      "hiddenAliases": [],
+      "id": "config:get",
+      "pluginAlias": "@r-cli/replicate",
+      "pluginName": "@r-cli/replicate",
+      "pluginType": "core",
+      "strict": true,
+      "enableJsonFlag": false,
+      "isESM": true,
+      "relativePath": [
+        "lib",
+        "commands",
+        "config",
+        "get.js"
+      ]
+    },
+    "config:set": {
+      "aliases": [],
+      "args": {
+        "key": {
+          "description": "Configuration key (currently only \"token\" is supported)",
+          "name": "key",
+          "required": true
+        },
+        "value": {
+          "description": "Configuration value",
+          "name": "value",
+          "required": true
+        }
+      },
+      "description": "Set configuration value",
+      "examples": [
+        "<%= config.bin %> <%= command.id %> token r8_your_token_here"
+      ],
+      "flags": {},
+      "hasDynamicHelp": false,
+      "hiddenAliases": [],
+      "id": "config:set",
+      "pluginAlias": "@r-cli/replicate",
+      "pluginName": "@r-cli/replicate",
+      "pluginType": "core",
+      "strict": true,
+      "enableJsonFlag": false,
+      "isESM": true,
+      "relativePath": [
+        "lib",
+        "commands",
+        "config",
+        "set.js"
+      ]
+    },
     "models:list": {
       "aliases": [],
       "args": {},
@@ -24,8 +179,8 @@
       "hasDynamicHelp": false,
       "hiddenAliases": [],
       "id": "models:list",
-      "pluginAlias": "replicate-cli",
-      "pluginName": "replicate-cli",
+      "pluginAlias": "@r-cli/replicate",
+      "pluginName": "@r-cli/replicate",
       "pluginType": "core",
       "strict": true,
       "isESM": true,
@@ -50,8 +205,8 @@
       "hasDynamicHelp": false,
       "hiddenAliases": [],
       "id": "models:show",
-      "pluginAlias": "replicate-cli",
-      "pluginName": "replicate-cli",
+      "pluginAlias": "@r-cli/replicate",
+      "pluginName": "@r-cli/replicate",
       "pluginType": "core",
       "strict": true,
       "isESM": true,
@@ -72,6 +227,24 @@
         }
       },
       "description": "Create a new prediction",
+      "examples": [
+        {
+          "description": "Create prediction with input file",
+          "command": "<%= config.bin %> <%= command.id %> owner/model --input-file=input.json"
+        },
+        {
+          "description": "Create and wait for completion",
+          "command": "<%= config.bin %> <%= command.id %> owner/model --input-file=input.json --wait"
+        },
+        {
+          "description": "Pass model parameters directly (use -- separator)",
+          "command": "<%= config.bin %> <%= command.id %> owner/model -- --prompt=\"a cat\" --width=512"
+        },
+        {
+          "description": "Wait and get JSON output only",
+          "command": "<%= config.bin %> <%= command.id %> owner/model --wait --json -- --prompt=\"a dog\""
+        }
+      ],
       "flags": {
         "input-file": {
           "description": "Path to JSON file containing input parameters",
@@ -86,13 +259,20 @@
           "name": "json",
           "allowNo": false,
           "type": "boolean"
+        },
+        "wait": {
+          "char": "w",
+          "description": "Wait for prediction to complete and return output",
+          "name": "wait",
+          "allowNo": false,
+          "type": "boolean"
         }
       },
       "hasDynamicHelp": false,
       "hiddenAliases": [],
       "id": "predictions:create",
-      "pluginAlias": "replicate-cli",
-      "pluginName": "replicate-cli",
+      "pluginAlias": "@r-cli/replicate",
+      "pluginName": "@r-cli/replicate",
       "pluginType": "core",
       "strict": false,
       "isESM": true,
@@ -132,8 +312,8 @@
       "hasDynamicHelp": false,
       "hiddenAliases": [],
       "id": "predictions:get",
-      "pluginAlias": "replicate-cli",
-      "pluginName": "replicate-cli",
+      "pluginAlias": "@r-cli/replicate",
+      "pluginName": "@r-cli/replicate",
       "pluginType": "core",
       "strict": true,
       "isESM": true,
@@ -169,8 +349,8 @@
       "hasDynamicHelp": false,
       "hiddenAliases": [],
       "id": "predictions:list",
-      "pluginAlias": "replicate-cli",
-      "pluginName": "replicate-cli",
+      "pluginAlias": "@r-cli/replicate",
+      "pluginName": "@r-cli/replicate",
       "pluginType": "core",
       "strict": true,
       "isESM": true,

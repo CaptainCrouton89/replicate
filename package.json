@@ -1,5 +1,5 @@
 {
-  "name": "replicate-cli",
+  "name": "@r-cli/replicate",
   "version": "1.0.0",
   "description": "CLI tool for interacting with Replicate API",
   "type": "module",
@@ -10,7 +10,8 @@
   "types": "lib/index.d.ts",
   "files": [
     "bin",
-    "lib"
+    "lib",
+    "README.md"
   ],
   "scripts": {
     "build": "tsc && tsc-alias",
@@ -21,10 +22,19 @@
     "replicate",
     "cli",
     "ai",
-    "ml"
+    "ml",
+    "api",
+    "predictions"
   ],
   "author": "",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/r-cli/replicate.git"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
   "dependencies": {
     "@oclif/core": "^4.0.0",
     "dotenv": "^16.4.5",

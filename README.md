@@ -268,6 +268,56 @@ replicate models:list
 - Ensure required fields are provided
 - Check argument types match the schema (string, number, boolean)
 
+## Publishing (Maintainers)
+
+This package uses automated publishing via GitHub Actions.
+
+### Setup (One-time)
+
+1. **Create npm token:**
+   - Go to https://www.npmjs.com/settings/YOUR_USERNAME/tokens
+   - Create a new "Automation" token
+   - Copy the token
+
+2. **Add npm token to GitHub:**
+   - Go to your repository settings → Secrets and variables → Actions
+   - Create a new secret named `NPM_TOKEN`
+   - Paste your npm token
+
+### Automated Workflow
+
+**On every push to main:**
+- Version automatically bumps based on commit messages:
+  - `major: breaking change` → bumps major version (1.0.0 → 2.0.0)
+  - `feat: new feature` → bumps minor version (1.0.0 → 1.1.0)
+  - Any other commit → bumps patch version (1.0.0 → 1.0.1)
+- Creates a git tag
+
+**To publish to npm:**
+1. Go to GitHub → Releases → Create a new release
+2. Create a tag matching the version (e.g., `v1.2.3`)
+3. Publish the release
+4. GitHub Actions will automatically:
+   - Update package.json version
+   - Build the project
+   - Publish to npm
+   - Commit version changes back to main
+
+### Manual Publishing (Alternative)
+
+If you prefer manual control:
+
+```bash
+# Bump version
+npm version patch  # or minor/major
+
+# Publish to npm
+npm publish
+
+# Push changes
+git push --follow-tags
+```
+
 ## License
 
 MIT

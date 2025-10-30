@@ -1,0 +1,66 @@
+name: Auto Version Bump
+
+on:
+  push:
+    branches:
+      - main
+    paths-ignore:
+      - 'package.json'
+      - 'package-lock.json'
+
+jobs:
+  version-bump:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Determine version bump type
+        id: bump_type
+        run: |
+          # Get commit messages since last tag
+          LAST_TAG=$(git describe --tags --abbrev=0 2>/dev/null || echo "")
+
+          if [ -z "$LAST_TAG" ]; then
+            # No tags yet, default to patch
+            echo "type=patch" >> $GITHUB_OUTPUT
+            exit 0
+          fi
+
+          COMMITS=$(git log $LAST_TAG..HEAD --pretty=format:"%s")
+
+          # Check for breaking changes or major keywords
+          if echo "$COMMITS" | grep -iE "^(BREAKING CHANGE|major):"; then
+            echo "type=major" >> $GITHUB_OUTPUT
+          # Check for features or minor keywords
+          elif echo "$COMMITS" | grep -iE "^(feat|feature|minor):"; then
+            echo "type=minor" >> $GITHUB_OUTPUT
+          # Default to patch
+          else
+            echo "type=patch" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Bump version
+        run: |
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+
+          # Bump version and create tag
+          npm version ${{ steps.bump_type.outputs.type }} -m "chore: bump version to %s [skip ci]"
+
+          # Push changes and tags
+          git push origin main --follow-tags

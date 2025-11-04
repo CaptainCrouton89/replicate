@@ -3,12 +3,13 @@ import { BaseCommand } from '../../utils/command-base.js';
 import { getApiToken } from '../../utils/replicate-client.js';
 
 export default class ModelsList extends BaseCommand {
-  static description = 'List available models';
+  static description = 'Search for models by name or description';
 
   static flags = {
     search: Flags.string({
       char: 's',
-      description: 'Search for models by name or description',
+      description: 'Search query for models',
+      required: true,
     }),
     json: Flags.boolean({
       char: 'j',
@@ -21,36 +22,29 @@ export default class ModelsList extends BaseCommand {
     const replicate = await this.getClient();
 
     try {
+      // Use the dedicated search API endpoint
+      const apiToken = getApiToken();
+      const searchQuery = encodeURIComponent(flags.search);
+
+      const response = await fetch(
+        `https://api.replicate.com/v1/search?query=${searchQuery}&limit=20`,
+        {
+          headers: {
+            'Authorization': `Token ${apiToken}`,
+          },
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error(`Search failed: ${response.statusText}`);
+      }
+
+      const data = await response.json() as any;
+
+      // Extract model objects from search results
       let allModels: any[] = [];
-
-      if (flags.search) {
-        // Use the dedicated search API endpoint (faster than pagination)
-        const apiToken = getApiToken();
-        const searchQuery = encodeURIComponent(flags.search);
-
-        const response = await fetch(
-          `https://api.replicate.com/v1/search?query=${searchQuery}&limit=20`,
-          {
-            headers: {
-              'Authorization': `Token ${apiToken}`,
-            },
-          }
-        );
-
-        if (!response.ok) {
-          throw new Error(`Search failed: ${response.statusText}`);
-        }
-
-        const data = await response.json() as any;
-
-        // Extract model objects from search results
-        if (data.models && Array.isArray(data.models)) {
-          allModels = data.models.map((item: any) => item.model);
-        }
-      } else {
-        // No search - just return first page
-        const page = await replicate.models.list();
-        allModels = page.results;
+      if (data.models && Array.isArray(data.models)) {
+        allModels = data.models.map((item: any) => item.model);
       }
 
       if (flags.json) {
